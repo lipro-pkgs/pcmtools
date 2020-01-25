@@ -1,0 +1,58 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Debianized-By: Stephan Linz <linz@li-pro.net>
+Debianized-Date: Sat, 25 Jan 2020 15:07:19 +0100
+Upstream-Name: pcmtools - PC/M tool chain
+Upstream-contact: Stephan Linz <linz@li-pro.net>
+Source: https://github.com/lipro-cpm4l/pcmtools
+    The pristine upstream source may contains obfuscated files, that are
+    thereby not appropriate for use as source files. This violates DFSG §2.
+    .
+    The 'debian/repack' program will removes those files to create the Debian
+    upstream source tarball.
+    .
+    The orig.tar.xz is just repacked Debian upstream source tarball
+    (currently without changes). See section get-orig-source in 'debian/rules'
+    file and array nonfree_fileglobs in 'debian/repack' file for details.
+
+Files: *
+Copyright:
+    © 2002–2020 Stephan Linz <linz@li-pro.net>
+License: GPL-2+
+License-Grant:
+    This program is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the
+    Free Software Foundation, either version 2 of the License, or (at your
+    option) any later version.
+    .
+    This program is distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+    or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+    for more details.
+    .
+    You should have received a copy of the GNU General Public License along
+    with this program. If not, see <http://www.gnu.org/licenses/>.
+
+Files: debian/*
+Copyright:
+    © 2015–2020 Stephan Linz <linz@li-pro.net>
+License: Apache-2
+License-Grant:
+    This is free software; you may copy, modify and/or distribute this work
+    under the terms of the Apache License, version 2.0 as published by the
+    Apache Software Foundation. No warranty expressed or implied.
+    
+License: GPL-2+
+    On Debian systems, the complete text of version 2 of the GNU General
+    Public License can be found in ‘/usr/share/common-licenses/GPL-2’.
+
+License: Apache-2
+    On Debian systems, the complete text of version 2.0 of the Apache License
+    can be found in ‘/usr/share/common-licenses/Apache-2.0’.
+
+
+# Local variables:
+# coding: utf-8
+# mode: debian-copyright
+# fill-column: 78
+# End:
+# vim: fileencoding=utf-8 textwidth=78 :

@@ -1,0 +1,36 @@
+===================
+pcmtools for Debian
+===================
+
+:Author: Stephan Linz <linz@li-pro.net>
+:Last-Updated: 2020-01-25
+
+Packages
+========
+
+The Debian “pcmtools” package provides two additional `data` folder
+for better regeneration of the original PC/M character generator PROM
+content:
+
+* All XPM data for PROM content of the PC/M 64x16 `/usr/chare/pcmtools/CG_6416`.
+* All XPM data for PROM content of the PC/M VID2k `/usr/chare/pcmtools/CG_VID2K`.
+
+Command-line programs
+=====================
+
+The Debian “pcmtools” source package provides the command-line programs
+by the following names:
+
+* The PROM character generator for the PC/M 64x16 `/usr/bin/mkcg.6416`.
+* The PROM character generator for the PC/M VID2k `/usr/bin/mkcg.vid2k`.
+
+Man pages are in section 1 under the corresponding names.
+
+
+..
+    Local variables:
+    coding: utf-8
+    mode: text
+    mode: rst
+    End:
+    vim: fileencoding=utf-8 filetype=rst :

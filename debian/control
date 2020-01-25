@@ -1,0 +1,23 @@
+Source: pcmtools
+Section: otherosfs
+Priority: optional
+Maintainer: Stephan Linz <linz@li-pro.net>
+Build-Depends: debhelper (>= 9),
+ dh-autoreconf,
+ autotools-dev,
+ quilt,
+ dejagnu,
+ pkg-config (>= 0.18),
+ libxpm-dev (>= 3.5)
+Standards-Version: 3.9.8
+Homepage: https://github.com/lipro-cpm4l/pcmtools
+Vcs-Git: https://github.com/lipro-pkgs/pcmtools.git
+Vcs-Browser: https://github.com/lipro-pkgs/pcmtools
+
+Package: pcmtools
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: PC/M tool chain
+ This package is a collaction of some useful tools around the
+ self made hardware project PC/M, a CP/M Personal Computer based
+ on the Zilog Z80 CPU.
