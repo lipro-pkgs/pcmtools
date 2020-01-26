@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/lipro/pcmtools.svg?branch=master)](https://travis-ci.org/lipro/pcmtools)
 
 pcmtools - PC/M tool chain
 ==========================

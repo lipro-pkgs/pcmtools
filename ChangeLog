@@ -1,29 +1,130 @@
-2005-04-19	Stephan Linz <linz@li-pro.net>
-	* pcmtools.h, mkzg.c: new MKZG option OPT_MKZG_INVERSE
-	* mkzg.6416.c: new option; negated output
+1.0-32-g70d0409 [2015-12-03 20:09:08 +0100]:
 
-2005-04-18	Stephan Linz <linz@li-pro.net>
-	* pcmtools.h, mkzg.c: new MKZG option OPT_MKZG_LEFTBOUND
-	* mkzg.c: fix problem with one a/o none color XPM
-	* mkzg.6416.c: new file; aded supoort for original PC/M 64x16
-	* mkzg.vid2k.c: change help phrase
+2015-12-03  Stephan Linz <linz@li-pro.net>
 
-2005-04-17	Stephan Linz <linz@li-pro.net>
-	* change to automake 1.7 / autoconf 2.59
+        * Prepare release 1.1 [70d0409]
 
-2003-04-06	Stephan Linz <linz@li-pro.net>
-	* mkzg.vid2k.c mkzg.c: code spliting
+2015-12-03  Stephan Linz <linz@li-pro.net>
 
-2003-03-29	Stephan Linz <linz@li-pro.net>
-	* mkzg.vid2k.c: new option --overview (-o)
+        * Merge pull request #4 from rexut/master [2cb3b77]
 
-2003-03-28	Stephan Linz <linz@li-pro.net>
-	* mkzg.vid2k.c: new option --verbose (-v)
-	* data/ZG_VID2K/Makefile: targets for building hex and bin files
-	  of all currently known ascii character tables
+2015-11-30  Stephan Linz <linz@li-pro.net>
 
-2003-03-27	Stephan Linz <linz@li-pro.net>
-	* all: first autoconfiguration
+        * Release process depends on .dist-version [8af4bcc]
 
-2003-03-25	Stephan Linz <linz@li-pro.net>
-	* all: initial version
+2015-11-30  Stephan Linz <linz@li-pro.net>
+
+        * Merge pull request #3 from rexut/master [aad5aea]
+
+2015-11-29  Stephan Linz <linz@li-pro.net>
+
+        * Fix all compiler warnings [5a5ebd6]
+
+2015-11-29  Stephan Linz <linz@li-pro.net>
+
+        * Fix typo in configure.ac [c314c81]
+
+2015-11-29  Stephan Linz <linz@li-pro.net>
+
+        * Use old git v1.x syntax for short date string [b8673ae]
+
+2015-11-29  Stephan Linz <linz@li-pro.net>
+
+        * Fix the disclean issue [3329c86]
+
+2015-11-29  Stephan Linz <linz@li-pro.net>
+
+        * Fix the DejaGnu test issue [a5cf927]
+
+2015-11-27  Stephan Linz <linz@li-pro.net>
+
+        * Reconstruct and polish autotools [475d6ea]
+
+2015-11-27  Stephan Linz <linz@li-pro.net>
+
+        * Add copyright and todo informations [5df9bee]
+
+2015-11-25  Stephan Linz <linz@li-pro.net>
+
+        * Merge pull request #2 from rexut/master [5dc15f8]
+
+2015-11-24  Stephan Linz <linz@li-pro.net>
+
+        * Ignore DejaGnu and Libtool artefacts [72e12ad]
+
+2015-11-24  Stephan Linz <linz@li-pro.net>
+
+        * Fix several errors in getopts interface [b84a7ea]
+
+2015-11-24  Stephan Linz <linz@li-pro.net>
+
+        * Fix a buffer overrun issue in mkcg overview [7936bc5]
+
+2015-11-24  Stephan Linz <linz@li-pro.net>
+
+        * Review and refine all tests [0ba10f5]
+
+2015-11-23  Stephan Linz <linz@li-pro.net>
+
+        * Add well known failed test: overview-original [8f60f79]
+
+2015-11-23  Stephan Linz <linz@li-pro.net>
+
+        * Translate object and symbol names to English [af0cd50]
+
+2015-11-23  Stephan Linz <linz@li-pro.net>
+
+        * Merge pull request #1 from rexut/master [e88ccd5]
+
+2015-11-23  Stephan Linz <linz@li-pro.net>
+
+        * Add git2cl as local tool [b714787]
+
+2015-11-23  Stephan Linz <linz@li-pro.net>
+
+        * Enable all deb package repos on Travis [ecfd559]
+
+2015-11-23  Stephan Linz <linz@li-pro.net>
+
+        * Upgrade build-essential only on Travis [41d8d79]
+
+2015-11-23  Stephan Linz <linz@li-pro.net>
+
+        * Force apt-get upgrade on Travis [0075dc8]
+
+2015-11-23  Stephan Linz <linz@li-pro.net>
+
+        * Install dejagnu and git2cl on Travis [fe93949]
+
+2015-11-23  Stephan Linz <linz@li-pro.net>
+
+        * Run complete distcheck on Travis [83eb2e1]
+
+2015-11-23  Stephan Linz <linz@li-pro.net>
+
+        * Ignore libtool artefacts [2039f2e]
+
+2015-11-23  Stephan Linz <linz@li-pro.net>
+
+        * Use srcdir from site.exp in all DejaGnu tests [909bbbe]
+
+2015-11-23  Stephan Linz <linz@li-pro.net>
+
+        * Enable DejaGnu test on Travis [d356482]
+
+2015-11-23  Stephan Linz <linz@li-pro.net>
+
+        * Add DejaGnu test framework [eb3acbf]
+
+2015-11-22  Stephan Linz <linz@li-pro.net>
+
+        * Use email from autoconf in all applications [fb05225]
+
+2015-11-22  Stephan Linz <linz@li-pro.net>
+
+        * Use libtool for shared code [de15299]
+
+2015-11-22  Stephan Linz <linz@li-pro.net>
+
+        * Reorganize the autotools configuration [2734433]
+

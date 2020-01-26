@@ -1,5 +1,5 @@
 #
-# Automake definitions for data/
+# Automake definitions for src/
 #
 # Copyright (C) 2002-21015  Stephan Linz <linz@li-pro.net>
 #
@@ -19,25 +19,30 @@
 # MA  02110-1301, USA.
 #
 
-EXTRA_DIST =
-EXTRA_DIST +=				\
-	CG_6416				\
-	CG_VID2K
+AM_CPPFLAGS = -I$(top_srcdir)/src
 
-pkgdatadir = @pkgdatadir@
+check_PROGRAMS = 			\
+	mkcg.6416			\
+	mkcg.vid2k
 
-install-data-local:
-	$(AM_V_GEN)for dir in `cd $(top_srcdir)/data; \
-	                       find $(EXTRA_DIST) -type d` ; do \
-	  $(mkinstalldirs) $(DESTDIR)$(pkgdatadir)/$$dir; \
-	done
-	$(AM_V_GEN)for file in `cd $(top_srcdir)/data; \
-	                        find $(EXTRA_DIST) -type f` ; do \
-	  $(INSTALL_DATA) $(top_srcdir)/data/$$file \
-                          $(DESTDIR)$(pkgdatadir)/$$file; \
-	done
+## TODO:9000 provide libmkcg as public library after refactoring
+noinst_LTLIBRARIES = libmkcg.la
+bin_PROGRAMS = mkcg.6416 mkcg.vid2k
 
-uninstall-local:
-	rm -rf $(DESTDIR)$(pkgdatadir)
+mkcg_6416_SOURCES = mkcg.6416.c
+mkcg_6416_LDADD = libmkcg.la
+mkcg_6416_CFLAGS = $(AM_CFLAGS) @XPM_CFLAGS@
+mkcg_6416_LDFLAGS = $(AM_LDFLAGS) @XPM_LIBS@
+
+mkcg_vid2k_SOURCES = mkcg.vid2k.c
+mkcg_vid2k_LDADD = libmkcg.la
+mkcg_vid2k_CFLAGS = $(AM_CFLAGS) @XPM_CFLAGS@
+mkcg_vid2k_LDFLAGS = $(AM_LDFLAGS) @XPM_LIBS@
+
+libmkcg_la_SOURCES = \
+	mkcg.c
+
+noinst_HEADERS = \
+	pcmtools.h
 
 MAINTAINERCLEANFILES = $(srcdir)/Makefile.in

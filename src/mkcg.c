@@ -1,61 +1,84 @@
+/*
+ * Core functions to handle different PC/M character generator PROMs.
+ *
+ * Copyright (C) 2002-21015  Stephan Linz <linz@li-pro.net>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA  02110-1301, USA.
+ */
+
 #include "pcmtools.h"
 
-bool mkzg_isvalidz(XpmImage *image, mkzg_zg *zg, mkzg_z *z)
+bool mkcg_isvalidch(XpmImage *image, mkcg_cg *cg, mkcg_ch *ch)
 {
-	int cnt;
+	unsigned int cnt;
 
-	if ((image->width != zg->exp_z_width) || (image->height != zg->exp_z_hight)) {
-		if (!(zg->options & OPT_MKZG_QUIET))
+	if ((image->width != cg->exp_ch_width) || (image->height != cg->exp_ch_hight)) {
+		if (!(cg->options & OPT_MKCG_QUIET))
 			ERR("dimension validation: %d x %d (%d x %d expected)",
 					image->width, image->height,
-					zg->exp_z_width, zg->exp_z_hight);
+					cg->exp_ch_width, cg->exp_ch_hight);
 		return false;
 	}
 
-	if (image->ncolors > zg->exp_z_max_color) {
-		if (!(zg->options & OPT_MKZG_QUIET))
+	if (image->ncolors > cg->exp_ch_max_color) {
+		if (!(cg->options & OPT_MKCG_QUIET))
 			ERR("too many colors: %d colors (%d colors expected)",
-					image->ncolors, zg->exp_z_max_color);
+					image->ncolors, cg->exp_ch_max_color);
 		return false;
 	}
 
 	for (cnt = 0; cnt < image->ncolors; cnt++) {
-		if (strcmp(zg->exp_z_dot_color, image->colorTable[cnt].c_color) == 0) {
-			z->dot_color_id = cnt;
-			cnt = ~zg->exp_z_max_color;
+		if (strcmp(cg->exp_ch_dot_color, image->colorTable[cnt].c_color) == 0) {
+			ch->dot_color_id = cnt;
+			cnt = ~cg->exp_ch_max_color;
 			break;
 		}
-		else {
-			z->dot_color_id = image->ncolors + 1; /* FIXME: overflow condition 255 -> 0 */
+		else {	/*
+			 * FIXME:1000 overflow condition 255 -> 0
+			 */
+			ch->dot_color_id = image->ncolors + 1;
 		}
 	}
 
-	if ((cnt != ~zg->exp_z_max_color) && (image->ncolors != zg->exp_z_max_color - 1)) {
-		if (!(zg->options & OPT_MKZG_QUIET))
-			ERR("missing dot color: %s expected", zg->exp_z_dot_color);
+	if ((cnt != ~cg->exp_ch_max_color) && (image->ncolors != cg->exp_ch_max_color - 1)) {
+		if (!(cg->options & OPT_MKCG_QUIET))
+			ERR("missing dot color: %s expected", cg->exp_ch_dot_color);
 		return false;
 	}
 
 	return true;
 }
 
-bool mkzg_out_banner(mkzg_zg *zg, mkzg_z *z)
+bool mkcg_out_banner(mkcg_cg *cg, mkcg_ch *ch)
 {
-	int	cnt_w, cnt_h, bit, bits;
+	unsigned int	cnt_w, cnt_h, bit, bits;
 
 	OUT("%s\n", "____________________");
 
-	for (cnt_h = 0; cnt_h < z->image.height; cnt_h++) {
+	for (cnt_h = 0; cnt_h < ch->image.height; cnt_h++) {
 
 		OUT("%s", "|");
 
-		for (cnt_w = bits = 0; cnt_w < z->image.width; cnt_w++) {
+		for (cnt_w = bits = 0; cnt_w < ch->image.width; cnt_w++) {
 
-			bit = (z->image.data[cnt_h * z->image.width + cnt_w]
-					== z->dot_color_id) ? 1 : 0;
+			bit = (ch->image.data[cnt_h * ch->image.width + cnt_w]
+					== ch->dot_color_id) ? 1 : 0;
 
-			OUT("%s", bit	? zg->options & OPT_MKZG_INVERSE ? " " : "#"
-					: zg->options & OPT_MKZG_INVERSE ? "#" : " ");
+			OUT("%s", bit	? cg->options & OPT_MKCG_INVERSE ? " " : "#"
+					: cg->options & OPT_MKCG_INVERSE ? "#" : " ");
 
 			bits += bit;
 			bits <<= 1;
@@ -63,30 +86,30 @@ bool mkzg_out_banner(mkzg_zg *zg, mkzg_z *z)
 		}
 
 		bits >>= 1;
-		bits = zg->options & OPT_MKZG_NEGATED ? ~bits : bits;
-		bits &= (1 << zg->bound_bits) - 1;
+		bits = cg->options & OPT_MKCG_NEGATED ? ~bits : bits;
+		bits &= (1 << cg->bound_bits) - 1;
 
-		OUT("|  0x%02X\n", zg->options & OPT_MKZG_LEFTBOUND ? (bits << (8 - zg->bound_bits)) : bits);
+		OUT("|  0x%02X\n", cg->options & OPT_MKCG_LEFTBOUND ? (bits << (8 - cg->bound_bits)) : bits);
 
 	}
 
 	return true;
 }
 
-bool mkzg_out_xxd(mkzg_zg *zg, mkzg_z *z, unsigned int addr)
+bool mkcg_out_xxd(mkcg_cg *cg, mkcg_ch *ch, unsigned int addr)
 {
-	int	cnt, cnt_w, cnt_h, bit, bits, bytes;
+	unsigned int	cnt, cnt_w, cnt_h, bit, bits, bytes;
 
 	OUT("%07X: ", addr);
 
 	bytes = 0;
 
-	for (cnt_h = 0; cnt_h < z->image.height; cnt_h++) {
+	for (cnt_h = 0; cnt_h < ch->image.height; cnt_h++) {
 
-		for (cnt_w = bits = 0; cnt_w < z->image.width; cnt_w++) {
+		for (cnt_w = bits = 0; cnt_w < ch->image.width; cnt_w++) {
 
-			bit = (z->image.data[cnt_h * z->image.width + cnt_w]
-					== z->dot_color_id) ? 1 : 0;
+			bit = (ch->image.data[cnt_h * ch->image.width + cnt_w]
+					== ch->dot_color_id) ? 1 : 0;
 			bits += bit;
 			bits <<= 1;
 
@@ -95,19 +118,19 @@ bool mkzg_out_xxd(mkzg_zg *zg, mkzg_z *z, unsigned int addr)
 		bytes++;
 
 		bits >>= 1;
-		bits = zg->options & OPT_MKZG_NEGATED ? ~bits : bits;
-		bits &= (1 << zg->bound_bits) - 1;
+		bits = cg->options & OPT_MKCG_NEGATED ? ~bits : bits;
+		bits &= (1 << cg->bound_bits) - 1;
 
-		OUT("%02X ", zg->options & OPT_MKZG_LEFTBOUND ? (bits << (8 - zg->bound_bits)) : bits);
+		OUT("%02X ", cg->options & OPT_MKCG_LEFTBOUND ? (bits << (8 - cg->bound_bits)) : bits);
 
 	}
 
-	for (cnt = 0; cnt < zg->bound_bytes - bytes; cnt++) {
+	for (cnt = 0; cnt < cg->bound_bytes - bytes; cnt++) {
 
-		bits = zg->options & OPT_MKZG_NEGATED ? ~0 : 0;
-		bits &= (1 << zg->bound_bits) - 1;
+		bits = cg->options & OPT_MKCG_NEGATED ? ~0 : 0;
+		bits &= (1 << cg->bound_bits) - 1;
 
-		OUT("%02X ", zg->options & OPT_MKZG_LEFTBOUND ? (bits << (8 - zg->bound_bits)) : bits);
+		OUT("%02X ", cg->options & OPT_MKCG_LEFTBOUND ? (bits << (8 - cg->bound_bits)) : bits);
 
 	}
 
@@ -125,7 +148,6 @@ static void set_XpmColor(XpmColor *entry,
 		snprintf(buf, strlen(STR) + 1, "%s", STR); \
 		PTR = buf; \
 	}
-		//strncpy(buf, string, strlen(string));
 
 	CONCAT_AT_POINTER(entry->string, string);
 	CONCAT_AT_POINTER(entry->c_color, c_color);
@@ -152,7 +174,7 @@ static void unset_XpmColor(XpmColor *entry)
 #undef FREE_AT_POINTER
 }
 
-bool mkzg_out_xpm(mkzg_zg *zg)
+bool mkcg_out_xpm(mkcg_cg *cg)
 {
 #define COLNUM		4
 #define COLID_NONE	0
@@ -162,18 +184,17 @@ bool mkzg_out_xpm(mkzg_zg *zg)
 #define BORDER_WIDTH	1
 	unsigned int	pixel_cnt, pixel_col_cnt, pixel_row_cnt,
 			col_cnt, row_cnt, char_cnt, pixel_in_char;
-	unsigned int	cols		= zg->opt_overview_cols;
-	unsigned int	rows_full	= zg->number / cols;
-	unsigned int	parts_last_row	= zg->number - (cols * rows_full);
-	unsigned int	pixel_in_col	= zg->z[0].image.width;
+	unsigned int	cols		= cg->opt_overview_cols;
+	unsigned int	rows_full	= cg->number / cols;
+	unsigned int	parts_last_row	= cg->number - (cols * rows_full);
+	unsigned int	pixel_in_col	= cg->ch[0].image.width;
 	unsigned int	pixel_in_cols	= cols * pixel_in_col;
-	unsigned int	pixel_in_row	= zg->z[0].image.height;
+	unsigned int	pixel_in_row	= cg->ch[0].image.height;
 	unsigned int	pixel_in_rows	= (parts_last_row ?
 						rows_full + 1 : rows_full)
 						* pixel_in_row;
 	unsigned int	pixel_num	= pixel_in_cols * pixel_in_rows;
 	unsigned int	*pixeldata;
-	char		*buf;
 	XpmColor	*colortable;
 	XpmImage	image;
 
@@ -184,7 +205,7 @@ bool mkzg_out_xpm(mkzg_zg *zg)
 
 	memset((void *)&image, 0, sizeof(image));
 
-	if (zg->options & OPT_MKZG_INVERSE) {
+	if (cg->options & OPT_MKCG_INVERSE) {
 		set_XpmColor(&colortable[COLID_DOT],	" ", "None");
 		set_XpmColor(&colortable[COLID_NONE],	"#", "#000000");
 	}
@@ -195,7 +216,7 @@ bool mkzg_out_xpm(mkzg_zg *zg)
 	set_XpmColor(&colortable[COLID_BORDER],	"|", "#FF0000");
 	set_XpmColor(&colortable[COLID_UNDEF],	"_", "#FFFF00");
 
-	if (zg->options & OPT_MKZG_VERBOSE) {
+	if (cg->options & OPT_MKCG_VERBOSE) {
 		INF("cols:\t\t%d ", cols);
 		INF("rows_full:\t%d ", rows_full);
 		INF("parts_last_row:\t%d ", parts_last_row);
@@ -218,11 +239,11 @@ bool mkzg_out_xpm(mkzg_zg *zg)
 				+ (pixel_cnt % pixel_in_col);
 
 		/* pixel in character */
-		if (char_cnt < zg->number) {
-			if (		(zg->z[char_cnt].image.width  == pixel_in_col)
-				&&	(zg->z[char_cnt].image.height == pixel_in_row)
-				&&	(zg->z[char_cnt].image.data[pixel_in_char]
-						== zg->z[char_cnt].dot_color_id)		) {
+		if (char_cnt < cg->number) {
+			if (		(cg->ch[char_cnt].image.width  == pixel_in_col)
+				&&	(cg->ch[char_cnt].image.height == pixel_in_row)
+				&&	(cg->ch[char_cnt].image.data[pixel_in_char]
+						== cg->ch[char_cnt].dot_color_id)		) {
 
 				pixeldata[pixel_cnt] = COLID_DOT;
 
@@ -242,7 +263,7 @@ bool mkzg_out_xpm(mkzg_zg *zg)
 	image.width		= pixel_in_cols;
 	image.height		= pixel_in_rows;
 	image.cpp		= 1;
-	image.ncolors		= sizeof(colortable);
+	image.ncolors		= COLNUM;
 	image.colorTable	= colortable;
 	image.data		= pixeldata;
 

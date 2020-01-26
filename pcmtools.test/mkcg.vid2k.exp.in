@@ -1,0 +1,77 @@
+#
+# DejaGnu test set for the PC/M VID2k character generator.
+#
+# Copyright (C) 2002-21015  Stephan Linz <linz@li-pro.net>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+# MA  02110-1301, USA.
+#
+
+set test "package"
+spawn ./src/mkcg.vid2k
+expect {
+  -re "^.*\\r\\nPackage: @PACKAGE@\\r\\n" {
+    pass "$test"
+  }
+  eof {fail "$test"}
+}
+
+set test "version"
+spawn ./src/mkcg.vid2k
+expect {
+  -re "^.*\\r\\nVersion: @VERSION@\\r\\n" {
+    pass "$test"
+  }
+  eof {fail "$test"}
+}
+
+set test "provides"
+spawn ./src/mkcg.vid2k
+expect {
+  -re "^.*\\r\\nPC/M VID2k character generator PROM.*\\r\\n$" {
+    pass "$test"
+  }
+  eof {fail "$test"}
+}
+
+set test "hexdump-single"
+spawn ./src/mkcg.vid2k --hexdump \
+      ${srcdir}/data/CG_VID2K/original/ascii_0x30.xpm
+expect {
+  -re "^0000000: C7 BB B3 AB 9B BB C7 FF FF FF FF FF FF FF FF FF \\r\\n" {
+    pass "$test"
+  }
+  eof {fail "$test"}
+}
+
+set test "hexdump-single-negated"
+spawn ./src/mkcg.vid2k --neg --hexdump \
+      ${srcdir}/data/CG_VID2K/original/ascii_0x30.xpm
+expect {
+  -re "^.*: invalid option\\r\\n" {
+    pass "$test"
+  }
+  eof {fail "$test"}
+}
+
+set test "overview-original-ascii-0x30"
+spawn ./src/mkcg.vid2k --quiet --overview=32 \
+      ${srcdir}/data/CG_VID2K/original/ascii_0x30.xpm
+expect {
+  -re "^/\\* XPM \\*/\r\n.*\r\n.*\"256 10 4 1\",\r\n.*\r\n$" {
+    pass "$test"
+  }
+  eof {fail "$test"}
+}
