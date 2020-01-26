@@ -3,6 +3,8 @@ pcmtools (1.1-1) UNRELEASED; urgency=low
   * UNRELEASED
   * New upstream version 1.1
   * debian/pcmtools.lintian-overrides: Rename all mkzg* to mkcg.*.
+  * debian/rules: Install ChangeLog with valid file name and compress
+    both ChangeLog files, the old one and the new with ongoing content.
 
  --
 
