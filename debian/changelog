@@ -1,13 +1,12 @@
-pcmtools (1.1-1) UNRELEASED; urgency=low
+pcmtools (1.1-1) unstable; urgency=low
 
-  * UNRELEASED
   * New upstream version 1.1
   * debian/pcmtools.lintian-overrides: Rename all mkzg* to mkcg.*.
   * debian/pcmtools.lintian-overrides: Remove hardening related entries.
   * debian/rules: Install ChangeLog with valid file name and compress
     both ChangeLog files, the old one and the new with ongoing content.
 
- --
+ -- Stephan Linz <linz@li-pro.net>  Sun, 26 Jan 2020 12:57:43 +0100
 
 pcmtools (1.0-1) unstable; urgency=medium
 
