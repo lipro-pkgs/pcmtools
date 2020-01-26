@@ -1,6 +1,2 @@
 pcmtools binary: binary-without-manpage usr/bin/mkcg.6416
 pcmtools binary: binary-without-manpage usr/bin/mkcg.vid2k
-pcmtools binary: hardening-no-bindnow usr/bin/mkcg.6416
-pcmtools binary: hardening-no-bindnow usr/bin/mkcg.vid2k
-pcmtools binary: hardening-no-pie usr/bin/mkcg.6416
-pcmtools binary: hardening-no-pie usr/bin/mkcg.vid2k
