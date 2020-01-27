@@ -9,6 +9,8 @@ pcmtools (1.2+dfsg.1-1) UNRELEASED; urgency=low
     to respect; without this, for example the manpage generation
     would be fail.
   * debian/control: Depends on help2man for auto-generated manpages.
+  * debian/pcmtools.lintian-overrides: Remove manpage related entries.
+    The package will install manpages for eac binary.
 
  --
 
