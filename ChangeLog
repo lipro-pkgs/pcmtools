@@ -1,4 +1,82 @@
-1.0-32-g70d0409 [2015-12-03 20:09:08 +0100]:
+1.2 [2015-12-05 11:09:30 +0100]:
+
+2015-12-05  Stephan Linz <linz@li-pro.net>
+
+        * Prepare release 1.2 [eab72b2]
+
+2015-12-05  Stephan Linz <linz@li-pro.net>
+
+        * Merge pull request #5 from rexut/master [f73c14b]
+
+2015-12-04  Stephan Linz <linz@li-pro.net>
+
+        * Install help2man on Travis [7544610]
+
+2015-12-04  Stephan Linz <linz@li-pro.net>
+
+        * Rename aux -> acx [20bc6ec]
+
+2015-12-04  Stephan Linz <linz@li-pro.net>
+
+        * Downgrade to require Automake 1.11 [78178ed]
+
+2015-12-04  Stephan Linz <linz@li-pro.net>
+
+        * Move autor from source code to manpage [ee6695c]
+
+2015-12-04  Stephan Linz <linz@li-pro.net>
+
+        * Fix manpage name of mkcg.vid2k [1011000]
+
+2015-12-04  Stephan Linz <linz@li-pro.net>
+
+        * Apply year of copyright automatically. [1b1edfd]
+
+2015-12-04  Stephan Linz <linz@li-pro.net>
+
+        * Rename pcmtools.test -> src/smoke/mkcg [86fc92f]
+
+2015-12-04  Stephan Linz <linz@li-pro.net>
+
+        * Rename build-aux -> aux [6651933]
+
+2015-12-04  Stephan Linz <linz@li-pro.net>
+
+        * Fix typo of year 2015 in all copyright strings. [45e116e]
+
+2015-12-04  Stephan Linz <linz@li-pro.net>
+
+        * Introduce the manpage generator [087be0d]
+
+2015-12-04  Stephan Linz <linz@li-pro.net>
+
+        * Fix TODO generator [7f31c33]
+
+2015-12-04  Stephan Linz <linz@li-pro.net>
+
+        * Check for particular program GNU help2man [6aaea3c]
+
+2015-12-04  Stephan Linz <linz@li-pro.net>
+
+        * Use AM_CONDITIONAL to avoid re-generating distfiles [88cebd0]
+
+2015-12-04  Stephan Linz <linz@li-pro.net>
+
+        * Install autotools artefacts into build-aux [48e635f]
+
+2015-12-03  Stephan Linz <linz@li-pro.net>
+
+        * Fix task order of release processing [53c81f0]
+
+2015-12-03  Stephan Linz <linz@li-pro.net>
+
+        * Split libmkcg into different files [27cf4bc]
+
+2015-12-03  Stephan Linz <linz@li-pro.net>
+
+        * Centralize CLI in libmkcg [64b20dd]
+
+1.1 [2015-12-03 20:09:08 +0100]:
 
 2015-12-03  Stephan Linz <linz@li-pro.net>
 

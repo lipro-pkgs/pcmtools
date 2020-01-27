@@ -17,7 +17,7 @@
 #
 # Automake definitions for top source directory
 #
-# Copyright (C) 2002-21015  Stephan Linz <linz@li-pro.net>
+# Copyright (C) 2002-2015  Stephan Linz <linz@li-pro.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -102,13 +102,16 @@ subdir = .
 DIST_COMMON = INSTALL NEWS README AUTHORS ChangeLog \
 	$(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
-	$(srcdir)/config.h.in \
-	$(top_srcdir)/pcmtools.test/mkcg.6416.exp.in \
-	$(top_srcdir)/pcmtools.test/mkcg.vid2k.exp.in $(dist_doc_DATA) \
-	COPYING TODO ar-lib compile config.guess config.sub depcomp \
-	install-sh missing ltmain.sh
+	$(srcdir)/config.in $(dist_doc_DATA) COPYING TODO acx/ar-lib \
+	acx/compile acx/config.guess acx/config.sub acx/depcomp \
+	acx/install-sh acx/missing acx/ltmain.sh \
+	$(top_srcdir)/acx/ar-lib $(top_srcdir)/acx/compile \
+	$(top_srcdir)/acx/config.guess $(top_srcdir)/acx/config.sub \
+	$(top_srcdir)/acx/install-sh $(top_srcdir)/acx/ltmain.sh \
+	$(top_srcdir)/acx/missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/as-ac-expand.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/ac-prog-help2man.m4 \
+	$(top_srcdir)/m4/as-ac-expand.m4 \
 	$(top_srcdir)/m4/ax_append_compile_flags.m4 \
 	$(top_srcdir)/m4/ax_append_flag.m4 \
 	$(top_srcdir)/m4/ax_append_link_flags.m4 \
@@ -125,8 +128,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = pcmtools.test/mkcg.6416.exp \
-	pcmtools.test/mkcg.vid2k.exp
+CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -193,7 +195,7 @@ am__recursive_targets = \
 AM_RECURSIVE_TARGETS = $(am__recursive_targets:-recursive=) TAGS CTAGS \
 	cscope distdir dist dist-all distcheck
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) \
-	$(LISP)config.h.in
+	$(LISP)config.in
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
 # *not* preserved.
@@ -213,10 +215,6 @@ am__define_uniq_tagged_files = \
 ETAGS = etags
 CTAGS = ctags
 CSCOPE = cscope
-DEJATOOL = $(PACKAGE)
-RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir $$srcdir
-EXPECT = expect
-RUNTEST = runtest
 DIST_SUBDIRS = $(SUBDIRS)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
@@ -296,6 +294,8 @@ HARDENING_FORMAT_CFLAGS = @HARDENING_FORMAT_CFLAGS@
 HARDENING_FORTIFY_CPPFLAGS = @HARDENING_FORTIFY_CPPFLAGS@
 HARDENING_RELRO_LDFLAGS = @HARDENING_RELRO_LDFLAGS@
 HARDENING_STACK_CFLAGS = @HARDENING_STACK_CFLAGS@
+HELP2MAN = @HELP2MAN@
+HELP2MANFLAGS = @HELP2MANFLAGS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -400,40 +400,39 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = -I m4
-AUTOMAKE_OPTIONS = dejagnu
-SUBDIRS = src data
-EXTRA_DIST = autogen.sh tools/get-version ChangeLog-20050419
+EXTRA_DIST = autogen.sh acx/get-version ChangeLog-20050419
+CLEANFILES = 
+SUBDIRS = src man data
 dist_doc_DATA = README README.md TODO
 doc_DATA = ChangeLog ChangeLog-20050419
 
 # Git pritty format string for ChangeLog generator
-GITLOG_PF = %w(78,0,8)%ad  %an <%ae>%n%n* %w(78,0,10)%s [%h]%n
+@BUILD_FROM_GIT_TRUE@GITLOG_PF = %w(78,0,8)%ad  %an <%ae>%n%n* %w(78,0,10)%s [%h]%n
 
-# release with paranoia backup to avoid debauched git repository
-rel__tar = ${AMTAR} cof - "$(top_srcdir)/.git"
+# Tar backup command line string for release generator
+@BUILD_FROM_GIT_TRUE@rel__tar = ${AMTAR} cof - "$(top_srcdir)/.git"
 MAINTAINERCLEANFILES = \
-	$(srcdir)/config.guess \
-	$(srcdir)/config.sub \
-	$(srcdir)/install-sh \
-	$(srcdir)/ltmain.sh \
+	$(srcdir)/aclocal.m4 \
+	$(srcdir)/acx/ar-lib \
+	$(srcdir)/acx/compile \
+	$(srcdir)/acx/config.* \
+	$(srcdir)/acx/depcomp \
+	$(srcdir)/acx/install-sh \
+	$(srcdir)/acx/ltmain.sh \
+	$(srcdir)/acx/missing \
+	$(srcdir)/configure \
+	$(srcdir)/configure.ac~ \
+	$(srcdir)/config.in \
+	$(srcdir)/config.in~ \
+	$(srcdir)/m4/ax_*.m4 \
 	$(srcdir)/m4/libtool.m4 \
 	$(srcdir)/m4/lt*.m4 \
-	$(srcdir)/m4/ax_*.m4 \
 	$(srcdir)/m4/pkg.m4 \
-	$(srcdir)/aclocal.m4 \
-	$(srcdir)/ar-lib \
-	$(srcdir)/compile \
-	$(srcdir)/missing \
-	$(srcdir)/depcomp \
+	$(srcdir)/Makefile.in \
 	$(srcdir)/INSTALL \
 	$(srcdir)/README \
 	$(srcdir)/ChangeLog \
-	$(srcdir)/TODO \
-	$(srcdir)/configure \
-	$(srcdir)/configure.ac~ \
-	$(srcdir)/config.h.in \
-	$(srcdir)/config.h.in~ \
-	$(srcdir)/Makefile.in
+	$(srcdir)/TODO
 
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
@@ -478,20 +477,16 @@ config.h: stamp-h1
 	@test -f $@ || rm -f stamp-h1
 	@test -f $@ || $(MAKE) $(AM_MAKEFLAGS) stamp-h1
 
-stamp-h1: $(srcdir)/config.h.in $(top_builddir)/config.status
+stamp-h1: $(srcdir)/config.in $(top_builddir)/config.status
 	@rm -f stamp-h1
 	cd $(top_builddir) && $(SHELL) ./config.status config.h
-$(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps) 
+$(srcdir)/config.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps) 
 	($(am__cd) $(top_srcdir) && $(AUTOHEADER))
 	rm -f stamp-h1
 	touch $@
 
 distclean-hdr:
 	-rm -f config.h stamp-h1
-pcmtools.test/mkcg.6416.exp: $(top_builddir)/config.status $(top_srcdir)/pcmtools.test/mkcg.6416.exp.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-pcmtools.test/mkcg.vid2k.exp: $(top_builddir)/config.status $(top_srcdir)/pcmtools.test/mkcg.vid2k.exp.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -649,48 +644,6 @@ cscopelist-am: $(am__tagged_files)
 distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 	-rm -f cscope.out cscope.in.out cscope.po.out cscope.files
-
-check-DEJAGNU: site.exp
-	srcdir='$(srcdir)'; export srcdir; \
-	EXPECT=$(EXPECT); export EXPECT; \
-	if $(SHELL) -c "$(RUNTEST) --version" > /dev/null 2>&1; then \
-	  exit_status=0; l='$(DEJATOOL)'; for tool in $$l; do \
-	    if $(RUNTEST) $(AM_RUNTESTFLAGS) $(RUNTESTDEFAULTFLAGS) $(RUNTESTFLAGS); \
-	    then :; else exit_status=1; fi; \
-	  done; \
-	else echo "WARNING: could not find '$(RUNTEST)'" 1>&2; :;\
-	fi; \
-	exit $$exit_status
-site.exp: Makefile $(EXTRA_DEJAGNU_SITE_CONFIG)
-	@echo 'Making a new site.exp file ...'
-	@echo '## these variables are automatically generated by make ##' >site.tmp
-	@echo '# Do not edit here.  If you wish to override these values' >>site.tmp
-	@echo '# edit the last section' >>site.tmp
-	@echo 'set srcdir "$(srcdir)"' >>site.tmp
-	@echo "set objdir `pwd`" >>site.tmp
-	@echo 'set build_alias "$(build_alias)"' >>site.tmp
-	@echo 'set build_triplet $(build_triplet)' >>site.tmp
-	@echo 'set host_alias "$(host_alias)"' >>site.tmp
-	@echo 'set host_triplet $(host_triplet)' >>site.tmp
-	@list='$(EXTRA_DEJAGNU_SITE_CONFIG)'; for f in $$list; do \
-	  echo "## Begin content included from file $$f.  Do not modify. ##" \
-	   && cat `test -f "$$f" || echo '$(srcdir)/'`$$f \
-	   && echo "## End content included from file $$f. ##" \
-	   || exit 1; \
-	 done >> site.tmp
-	@echo "## End of auto-generated content; you can edit from here. ##" >> site.tmp
-	@if test -f site.exp; then \
-	   sed -e '1,/^## End of auto-generated content.*##/d' site.exp >> site.tmp; \
-	 fi
-	@-rm -f site.bak
-	@test ! -f site.exp || mv site.exp site.bak
-	@mv site.tmp site.exp
-
-distclean-DEJAGNU:
-	-rm -f site.exp site.bak
-	-l='$(DEJATOOL)'; for tool in $$l; do \
-	  rm -f $$tool.sum $$tool.log; \
-	done
 
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
@@ -879,7 +832,6 @@ distcleancheck: distclean
 	       $(distcleancheck_listfiles) ; \
 	       exit 1; } >&2
 check-am: all-am
-	$(MAKE) $(AM_MAKEFLAGS) check-DEJAGNU
 check: check-recursive
 all-am: Makefile $(DATA) config.h
 installdirs: installdirs-recursive
@@ -909,6 +861,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
@@ -925,8 +878,8 @@ clean-am: clean-generic clean-libtool mostlyclean-am
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -f Makefile
-distclean-am: clean-am distclean-DEJAGNU distclean-generic \
-	distclean-hdr distclean-libtool distclean-tags
+distclean-am: clean-am distclean-generic distclean-hdr \
+	distclean-libtool distclean-tags
 
 dvi: dvi-recursive
 
@@ -988,17 +941,16 @@ ps-am:
 
 uninstall-am: uninstall-dist_docDATA uninstall-docDATA
 
-.MAKE: $(am__recursive_targets) all check-am install-am install-strip
+.MAKE: $(am__recursive_targets) all install-am install-strip
 
 .PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am \
-	am--refresh check check-DEJAGNU check-am clean clean-cscope \
-	clean-generic clean-libtool cscope cscopelist-am ctags \
-	ctags-am dist dist-all dist-bzip2 dist-gzip dist-lzip \
-	dist-shar dist-tarZ dist-xz dist-zip distcheck distclean \
-	distclean-DEJAGNU distclean-generic distclean-hdr \
-	distclean-libtool distclean-tags distcleancheck distdir \
-	distuninstallcheck dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am \
+	am--refresh check check-am clean clean-cscope clean-generic \
+	clean-libtool cscope cscopelist-am ctags ctags-am dist \
+	dist-all dist-bzip2 dist-gzip dist-lzip dist-shar dist-tarZ \
+	dist-xz dist-zip distcheck distclean distclean-generic \
+	distclean-hdr distclean-libtool distclean-tags distcleancheck \
+	distdir distuninstallcheck dvi dvi-am html html-am info \
+	info-am install install-am install-data install-data-am \
 	install-dist_docDATA install-docDATA install-dvi \
 	install-dvi-am install-exec install-exec-am install-html \
 	install-html-am install-info install-info-am install-man \
@@ -1011,59 +963,55 @@ uninstall-am: uninstall-dist_docDATA uninstall-docDATA
 
 
 # Build readme from markdown
-README: README.md
-	$(AM_V_GEN)fgrep -v "[Build Status]" $<  > $@
+@BUILD_FROM_GIT_TRUE@README: README.md
+@BUILD_FROM_GIT_TRUE@	$(AM_V_GEN)fgrep -v "[Build Status]" $<  > $@
 
 # Build changelog from git history
-ChangeLog:
-	$(AM_V_GEN)if test -e $(top_srcdir)/.git; then \
-	  prev=$$(git --git-dir $(top_srcdir)/.git describe \
-	              --tags --always --match '[0-9]*' 2> /dev/null) ; \
-	  for tag in $$(git --git-dir $(top_srcdir)/.git tag | \
-	                $(EGREP) '^[0-9]+(\.[0-9]+){1,}$$' | \
-	                sort -t. -k 1,1nr -k 2,2nr -k 3,3nr); do \
-	    if [ x"$$prev" = x ]; then prev=$$tag ; fi ; \
-	    if [ x"$$prev" = x"$$tag" ]; then continue; fi ; \
-	    echo "$$prev [$$(git --git-dir $(top_srcdir)/.git log \
-	                     $$prev -1 --pretty=format:'%ai')]:" ; \
-	    echo "" ; \
-	    git --git-dir $(top_srcdir)/.git log --date=short \
-	        --pretty=format:'$(GITLOG_PF)' $$tag..$$prev ; \
-	    echo "" ; \
-	    prev=$$tag ; \
-	  done > $@ ; \
-	else \
-	  touch $@ ; \
-	fi
+@BUILD_FROM_GIT_TRUE@ChangeLog:
+@BUILD_FROM_GIT_TRUE@	$(AM_V_GEN)prev=$$(git --git-dir $(top_srcdir)/.git describe \
+@BUILD_FROM_GIT_TRUE@	                   --tags --always --match '[0-9]*' 2> /dev/null) ; \
+@BUILD_FROM_GIT_TRUE@	  for tag in $$(git --git-dir $(top_srcdir)/.git tag | \
+@BUILD_FROM_GIT_TRUE@	                $(EGREP) '^[0-9]+(\.[0-9]+){1,}$$' | \
+@BUILD_FROM_GIT_TRUE@	                sort -t. -k 1,1nr -k 2,2nr -k 3,3nr); do \
+@BUILD_FROM_GIT_TRUE@	    if [ x"$$prev" = x ]; then prev=$$tag ; fi ; \
+@BUILD_FROM_GIT_TRUE@	    if [ x"$$prev" = x"$$tag" ]; then continue; fi ; \
+@BUILD_FROM_GIT_TRUE@	    echo "$$prev [$$(git --git-dir $(top_srcdir)/.git log \
+@BUILD_FROM_GIT_TRUE@	                     $$prev -1 --pretty=format:'%ai')]:" ; \
+@BUILD_FROM_GIT_TRUE@	    echo "" ; \
+@BUILD_FROM_GIT_TRUE@	    git --git-dir $(top_srcdir)/.git log --date=short \
+@BUILD_FROM_GIT_TRUE@	        --pretty=format:'$(GITLOG_PF)' $$tag..$$prev ; \
+@BUILD_FROM_GIT_TRUE@	    echo "" ; \
+@BUILD_FROM_GIT_TRUE@	    prev=$$tag ; \
+@BUILD_FROM_GIT_TRUE@	  done > $@
 
 # Build todo from git controlled objects
-TODO:
-	$(AM_V_GEN)if test -e $(top_srcdir)/.git; then \
-	  git --git-dir $(top_srcdir)/.git ls-tree \
-	  -r --name-only HEAD | xargs grep -nH "T[O]DO:\|FIX[M][E]:" | \
-	  sed 's/\([^:]*:[^:]*\):\(.*\)T[O]DO:\(.*\)/\3 (\1)/' | \
-	  sed 's/\([^:]*:[^:]*\):\(.*\)FIX[M][E]:\(.*\)/\3 (\1)/' | \
-	  grep -v '\$$(top_srcdir)/\.git' | sort -ns | \
-	  awk '(last != $$1) {print ""} {last=$$1 ; print}' > $@ ; \
-	else \
-	  touch $@ ; \
-	fi
-.PHONY: release
-release: $(top_srcdir)/.git $(top_srcdir)/.dist-version
-	$(AM_V_GEN)$(rel__tar) | bzip2 -9 -c \
-	  >$(top_srcdir)/.backup-gitdir-$$(date +%s).tar.bz2 && \
-	touch configure.ac && \
-	$(MAKE)  $(AM_MAKEFLAGS) \
-	  top_distdir="$(top_distdir)" \
-	  distdir="$(distdir)" \
-	  distcheck && \
-	test -z "$$(git --git-dir $(top_srcdir)/.git status --porcelain)" && \
-	git --git-dir $(top_srcdir)/.git \
-	  diff --quiet --ignore-submodules HEAD && \
-	git --git-dir $(top_srcdir)/.git \
-	  branch --no-track release/$(PACKAGE_VERSION) && \
-	git --git-dir $(top_srcdir)/.git \
-	  tag -sm 'Version $(PACKAGE_VERSION)' $(PACKAGE_VERSION)
+@BUILD_FROM_GIT_TRUE@TODO:
+@BUILD_FROM_GIT_TRUE@	$(AM_V_GEN)git --git-dir $(top_srcdir)/.git ls-tree \
+@BUILD_FROM_GIT_TRUE@	  -r --name-only HEAD | grep -v '^Makefile\.am' | \
+@BUILD_FROM_GIT_TRUE@	  sed 's/^/$(top_srcdir)\//g' | \
+@BUILD_FROM_GIT_TRUE@	  xargs grep -nH "T[O]DO:\|FIX[M][E]:" | \
+@BUILD_FROM_GIT_TRUE@	  sed 's/\([^:]*:[^:]*\):\(.*\)T[O]DO:\(.*\)/\3 (\1)/' | \
+@BUILD_FROM_GIT_TRUE@	  sed 's/\([^:]*:[^:]*\):\(.*\)FIX[M][E]:\(.*\)/\3 (\1)/' | \
+@BUILD_FROM_GIT_TRUE@	  grep -v '\$$(top_srcdir)/\.git' | sort -ns | \
+@BUILD_FROM_GIT_TRUE@	  awk '(last != $$1) {print ""} {last=$$1 ; print}' > $@
+
+# release with paranoia backup to avoid debauched git repository
+@BUILD_FROM_GIT_TRUE@.PHONY: release
+@BUILD_FROM_GIT_TRUE@release: $(top_srcdir)/.dist-version
+@BUILD_FROM_GIT_TRUE@	$(AM_V_GEN)$(rel__tar) | bzip2 -9 -c \
+@BUILD_FROM_GIT_TRUE@	  >$(top_srcdir)/.backup-gitdir-$$(date +%s).tar.bz2 && \
+@BUILD_FROM_GIT_TRUE@	test -z "$$(git --git-dir $(top_srcdir)/.git status --porcelain)" && \
+@BUILD_FROM_GIT_TRUE@	git --git-dir $(top_srcdir)/.git \
+@BUILD_FROM_GIT_TRUE@	  diff --quiet --ignore-submodules HEAD && \
+@BUILD_FROM_GIT_TRUE@	git --git-dir $(top_srcdir)/.git \
+@BUILD_FROM_GIT_TRUE@	  branch --no-track release/$(PACKAGE_VERSION) && \
+@BUILD_FROM_GIT_TRUE@	git --git-dir $(top_srcdir)/.git \
+@BUILD_FROM_GIT_TRUE@	  tag -sm 'Version $(PACKAGE_VERSION)' $(PACKAGE_VERSION) && \
+@BUILD_FROM_GIT_TRUE@	touch configure.ac && \
+@BUILD_FROM_GIT_TRUE@	$(MAKE) $(AM_MAKEFLAGS) \
+@BUILD_FROM_GIT_TRUE@	  top_distdir="$(top_distdir)" \
+@BUILD_FROM_GIT_TRUE@	  distdir="$(distdir)" \
+@BUILD_FROM_GIT_TRUE@	  distcheck
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
