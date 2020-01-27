@@ -9,6 +9,12 @@ To Do
 
 * Add support for `functional testing of Debian packages`_ with `autopkgtest`.
 
+.. _`functional testing of Debian packages`: https://ci.debian.net/doc/file.TUTORIAL.html
+
+
+Done
+====
+
 * Support hardening options for Position Independent Executable (PIE) and
   prevents GOT overwrite attacks (BINDNOW).
   Details see: `Debian Hardening Options`_
@@ -17,14 +23,7 @@ To Do
   introduced to avoid the lintian warnings as an result of the missing
   hardening options in upstream source code.
 
-.. _`functional testing of Debian packages`: https://ci.debian.net/doc/file.TUTORIAL.html
 .. _`Debian Hardening Options`: https://wiki.debian.org/Hardening
-
-
-Done
-====
-
-Nothing done until now.
 
 
 ..

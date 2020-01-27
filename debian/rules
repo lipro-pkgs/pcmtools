@@ -25,6 +25,8 @@ DISTRIBUTION_NAME = pcmtools
 
 package_working_root = debian
 package_install_root = debian/${DISTRIBUTION_NAME}
+package_docu_root = ${package_install_root}/usr/share/doc/${DISTRIBUTION_NAME}
+usr_share_doc = usr/share/doc/${DISTRIBUTION_NAME}
 
 INSTALL = install
 
@@ -35,6 +37,13 @@ export https_proxy = ${http_proxy}
 
 %:
 	dh $@
+
+
+override_dh_installchangelogs:
+	$(Q)dh_installchangelogs -k ${package_docu_root}/ChangeLog
+
+override_dh_compress:
+	$(Q)dh_compress ${usr_share_doc}/ChangeLog-20050419
 
 
 .PHONY: get-packaged-orig-source
