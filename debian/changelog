@@ -3,6 +3,7 @@ pcmtools (1.2+dfsg.1-1) UNRELEASED; urgency=low
   * UNRELEASED
   * New upstream version 1.2+dfsg.1
   * debian/repack: Cleanup auto-generated manpages from upstream.
+  * debian/watch: Respect DFSG version extension.
 
  --
 
