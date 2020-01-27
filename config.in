@@ -1,4 +1,7 @@
-/* config.h.in.  Generated from configure.ac by autoheader.  */
+/* config.in.  Generated from configure.ac by autoheader.  */
+
+/* year in copyright message */
+#undef COPYRIGHT_YEAR
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H

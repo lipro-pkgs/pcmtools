@@ -1,9 +1,4 @@
 
- (Makefile.am:67)
+1000 overflow condition 255 -> 0 (./src/mkcg_isvalidch.c:50)
 
-1000 overflow condition 255 -> 0 (src/mkcg.c:50)
-
-2000 centralized the CLI i/f in libmkcg (src/mkcg.6416.c:21)
-2000 centralized the CLI i/f in libmkcg (src/mkcg.vid2k.c:21)
-
-9000 provide libmkcg as public library after refactoring (src/Makefile.am:28)
+9000 provide libmkcg as public library after refactoring (./src/Makefile.am:48)

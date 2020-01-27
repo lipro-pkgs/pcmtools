@@ -17,7 +17,7 @@
 #
 # Automake definitions for src/
 #
-# Copyright (C) 2002-21015  Stephan Linz <linz@li-pro.net>
+# Copyright (C) 2002-2015  Stephan Linz <linz@li-pro.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -104,9 +104,10 @@ check_PROGRAMS = mkcg.6416$(EXEEXT) mkcg.vid2k$(EXEEXT)
 bin_PROGRAMS = mkcg.6416$(EXEEXT) mkcg.vid2k$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
-	$(top_srcdir)/depcomp $(noinst_HEADERS)
+	$(top_srcdir)/acx/depcomp $(noinst_HEADERS)
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/as-ac-expand.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/ac-prog-help2man.m4 \
+	$(top_srcdir)/m4/as-ac-expand.m4 \
 	$(top_srcdir)/m4/ax_append_compile_flags.m4 \
 	$(top_srcdir)/m4/ax_append_flag.m4 \
 	$(top_srcdir)/m4/ax_append_link_flags.m4 \
@@ -125,26 +126,25 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libmkcg_la_LIBADD =
-am_libmkcg_la_OBJECTS = mkcg.lo
+am_libmkcg_la_OBJECTS = libmkcg_la-mkcg_isvalidch.lo \
+	libmkcg_la-mkcg_out_banner.lo libmkcg_la-mkcg_out_xxd.lo \
+	libmkcg_la-mkcg_out_xpm.lo libmkcg_la-mkcg_cli.lo
 libmkcg_la_OBJECTS = $(am_libmkcg_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+libmkcg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libmkcg_la_CFLAGS) \
+	$(CFLAGS) $(libmkcg_la_LDFLAGS) $(LDFLAGS) -o $@
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_mkcg_6416_OBJECTS = mkcg_6416-mkcg.6416.$(OBJEXT)
+am_mkcg_6416_OBJECTS = mkcg_cmd_6416.$(OBJEXT)
 mkcg_6416_OBJECTS = $(am_mkcg_6416_OBJECTS)
 mkcg_6416_DEPENDENCIES = libmkcg.la
-mkcg_6416_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(mkcg_6416_CFLAGS) \
-	$(CFLAGS) $(mkcg_6416_LDFLAGS) $(LDFLAGS) -o $@
-am_mkcg_vid2k_OBJECTS = mkcg_vid2k-mkcg.vid2k.$(OBJEXT)
+am_mkcg_vid2k_OBJECTS = mkcg_cmd_vid2k.$(OBJEXT)
 mkcg_vid2k_OBJECTS = $(am_mkcg_vid2k_OBJECTS)
 mkcg_vid2k_DEPENDENCIES = libmkcg.la
-mkcg_vid2k_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(mkcg_vid2k_CFLAGS) \
-	$(CFLAGS) $(mkcg_vid2k_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -158,7 +158,7 @@ am__v_at_ = $(am__v_at_@AM_DEFAULT_V@)
 am__v_at_0 = @
 am__v_at_1 = 
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
-depcomp = $(SHELL) $(top_srcdir)/depcomp
+depcomp = $(SHELL) $(top_srcdir)/acx/depcomp
 am__depfiles_maybe = depfiles
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
@@ -208,6 +208,8 @@ am__define_uniq_tagged_files = \
   done | $(am__uniquify_input)`
 ETAGS = etags
 CTAGS = ctags
+EXPECT = expect
+RUNTEST = runtest
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 pkgdatadir = @pkgdatadir@
 ACLOCAL = @ACLOCAL@
@@ -245,6 +247,8 @@ HARDENING_FORMAT_CFLAGS = @HARDENING_FORMAT_CFLAGS@
 HARDENING_FORTIFY_CPPFLAGS = @HARDENING_FORTIFY_CPPFLAGS@
 HARDENING_RELRO_LDFLAGS = @HARDENING_RELRO_LDFLAGS@
 HARDENING_STACK_CFLAGS = @HARDENING_STACK_CFLAGS@
+HELP2MAN = @HELP2MAN@
+HELP2MANFLAGS = @HELP2MANFLAGS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -349,18 +353,31 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CPPFLAGS = -I$(top_srcdir)/src
-noinst_LTLIBRARIES = libmkcg.la
-mkcg_6416_SOURCES = mkcg.6416.c
-mkcg_6416_LDADD = libmkcg.la
-mkcg_6416_CFLAGS = $(AM_CFLAGS) @XPM_CFLAGS@
-mkcg_6416_LDFLAGS = $(AM_LDFLAGS) @XPM_LIBS@
-mkcg_vid2k_SOURCES = mkcg.vid2k.c
-mkcg_vid2k_LDADD = libmkcg.la
-mkcg_vid2k_CFLAGS = $(AM_CFLAGS) @XPM_CFLAGS@
-mkcg_vid2k_LDFLAGS = $(AM_LDFLAGS) @XPM_LIBS@
-libmkcg_la_SOURCES = \
-	mkcg.c
+EXTRA_DIST = smoke/mkcg/6416.exp smoke/data/6416_30.xpm \
+	smoke/mkcg/vid2k.exp smoke/data/vid2k_30.xpm \
+	smoke/config/default.exp
+CLEANFILES = mkcg.xml
+AUTOMAKE_OPTIONS = dejagnu
+DEJATOOL = mkcg
+RUNTESTDEFAULTFLAGS = \
+	--tool $$tool			\
+	--srcdir $$srcdir/smoke		\
+	--xml --status --all
 
+noinst_LTLIBRARIES = libmkcg.la
+mkcg_6416_SOURCES = mkcg_cmd_6416.c
+mkcg_6416_LDADD = libmkcg.la
+mkcg_vid2k_SOURCES = mkcg_cmd_vid2k.c
+mkcg_vid2k_LDADD = libmkcg.la
+libmkcg_la_SOURCES = \
+	mkcg_isvalidch.c		\
+	mkcg_out_banner.c		\
+	mkcg_out_xxd.c			\
+	mkcg_out_xpm.c			\
+	mkcg_cli.c
+
+libmkcg_la_CFLAGS = $(AM_CFLAGS) @XPM_CFLAGS@
+libmkcg_la_LDFLAGS = $(AM_LDFLAGS) @XPM_LIBS@
 noinst_HEADERS = \
 	pcmtools.h
 
@@ -412,7 +429,7 @@ clean-noinstLTLIBRARIES:
 	}
 
 libmkcg.la: $(libmkcg_la_OBJECTS) $(libmkcg_la_DEPENDENCIES) $(EXTRA_libmkcg_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(LINK)  $(libmkcg_la_OBJECTS) $(libmkcg_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libmkcg_la_LINK)  $(libmkcg_la_OBJECTS) $(libmkcg_la_LIBADD) $(LIBS)
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
@@ -474,11 +491,11 @@ clean-checkPROGRAMS:
 
 mkcg.6416$(EXEEXT): $(mkcg_6416_OBJECTS) $(mkcg_6416_DEPENDENCIES) $(EXTRA_mkcg_6416_DEPENDENCIES) 
 	@rm -f mkcg.6416$(EXEEXT)
-	$(AM_V_CCLD)$(mkcg_6416_LINK) $(mkcg_6416_OBJECTS) $(mkcg_6416_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(LINK) $(mkcg_6416_OBJECTS) $(mkcg_6416_LDADD) $(LIBS)
 
 mkcg.vid2k$(EXEEXT): $(mkcg_vid2k_OBJECTS) $(mkcg_vid2k_DEPENDENCIES) $(EXTRA_mkcg_vid2k_DEPENDENCIES) 
 	@rm -f mkcg.vid2k$(EXEEXT)
-	$(AM_V_CCLD)$(mkcg_vid2k_LINK) $(mkcg_vid2k_OBJECTS) $(mkcg_vid2k_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(LINK) $(mkcg_vid2k_OBJECTS) $(mkcg_vid2k_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -486,9 +503,13 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mkcg.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mkcg_6416-mkcg.6416.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mkcg_vid2k-mkcg.vid2k.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmkcg_la-mkcg_cli.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmkcg_la-mkcg_isvalidch.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmkcg_la-mkcg_out_banner.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmkcg_la-mkcg_out_xpm.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmkcg_la-mkcg_out_xxd.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mkcg_cmd_6416.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mkcg_cmd_vid2k.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -514,33 +535,40 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
 
-mkcg_6416-mkcg.6416.o: mkcg.6416.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mkcg_6416_CFLAGS) $(CFLAGS) -MT mkcg_6416-mkcg.6416.o -MD -MP -MF $(DEPDIR)/mkcg_6416-mkcg.6416.Tpo -c -o mkcg_6416-mkcg.6416.o `test -f 'mkcg.6416.c' || echo '$(srcdir)/'`mkcg.6416.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mkcg_6416-mkcg.6416.Tpo $(DEPDIR)/mkcg_6416-mkcg.6416.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mkcg.6416.c' object='mkcg_6416-mkcg.6416.o' libtool=no @AMDEPBACKSLASH@
+libmkcg_la-mkcg_isvalidch.lo: mkcg_isvalidch.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmkcg_la_CFLAGS) $(CFLAGS) -MT libmkcg_la-mkcg_isvalidch.lo -MD -MP -MF $(DEPDIR)/libmkcg_la-mkcg_isvalidch.Tpo -c -o libmkcg_la-mkcg_isvalidch.lo `test -f 'mkcg_isvalidch.c' || echo '$(srcdir)/'`mkcg_isvalidch.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmkcg_la-mkcg_isvalidch.Tpo $(DEPDIR)/libmkcg_la-mkcg_isvalidch.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mkcg_isvalidch.c' object='libmkcg_la-mkcg_isvalidch.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mkcg_6416_CFLAGS) $(CFLAGS) -c -o mkcg_6416-mkcg.6416.o `test -f 'mkcg.6416.c' || echo '$(srcdir)/'`mkcg.6416.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmkcg_la_CFLAGS) $(CFLAGS) -c -o libmkcg_la-mkcg_isvalidch.lo `test -f 'mkcg_isvalidch.c' || echo '$(srcdir)/'`mkcg_isvalidch.c
 
-mkcg_6416-mkcg.6416.obj: mkcg.6416.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mkcg_6416_CFLAGS) $(CFLAGS) -MT mkcg_6416-mkcg.6416.obj -MD -MP -MF $(DEPDIR)/mkcg_6416-mkcg.6416.Tpo -c -o mkcg_6416-mkcg.6416.obj `if test -f 'mkcg.6416.c'; then $(CYGPATH_W) 'mkcg.6416.c'; else $(CYGPATH_W) '$(srcdir)/mkcg.6416.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mkcg_6416-mkcg.6416.Tpo $(DEPDIR)/mkcg_6416-mkcg.6416.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mkcg.6416.c' object='mkcg_6416-mkcg.6416.obj' libtool=no @AMDEPBACKSLASH@
+libmkcg_la-mkcg_out_banner.lo: mkcg_out_banner.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmkcg_la_CFLAGS) $(CFLAGS) -MT libmkcg_la-mkcg_out_banner.lo -MD -MP -MF $(DEPDIR)/libmkcg_la-mkcg_out_banner.Tpo -c -o libmkcg_la-mkcg_out_banner.lo `test -f 'mkcg_out_banner.c' || echo '$(srcdir)/'`mkcg_out_banner.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmkcg_la-mkcg_out_banner.Tpo $(DEPDIR)/libmkcg_la-mkcg_out_banner.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mkcg_out_banner.c' object='libmkcg_la-mkcg_out_banner.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mkcg_6416_CFLAGS) $(CFLAGS) -c -o mkcg_6416-mkcg.6416.obj `if test -f 'mkcg.6416.c'; then $(CYGPATH_W) 'mkcg.6416.c'; else $(CYGPATH_W) '$(srcdir)/mkcg.6416.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmkcg_la_CFLAGS) $(CFLAGS) -c -o libmkcg_la-mkcg_out_banner.lo `test -f 'mkcg_out_banner.c' || echo '$(srcdir)/'`mkcg_out_banner.c
 
-mkcg_vid2k-mkcg.vid2k.o: mkcg.vid2k.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mkcg_vid2k_CFLAGS) $(CFLAGS) -MT mkcg_vid2k-mkcg.vid2k.o -MD -MP -MF $(DEPDIR)/mkcg_vid2k-mkcg.vid2k.Tpo -c -o mkcg_vid2k-mkcg.vid2k.o `test -f 'mkcg.vid2k.c' || echo '$(srcdir)/'`mkcg.vid2k.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mkcg_vid2k-mkcg.vid2k.Tpo $(DEPDIR)/mkcg_vid2k-mkcg.vid2k.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mkcg.vid2k.c' object='mkcg_vid2k-mkcg.vid2k.o' libtool=no @AMDEPBACKSLASH@
+libmkcg_la-mkcg_out_xxd.lo: mkcg_out_xxd.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmkcg_la_CFLAGS) $(CFLAGS) -MT libmkcg_la-mkcg_out_xxd.lo -MD -MP -MF $(DEPDIR)/libmkcg_la-mkcg_out_xxd.Tpo -c -o libmkcg_la-mkcg_out_xxd.lo `test -f 'mkcg_out_xxd.c' || echo '$(srcdir)/'`mkcg_out_xxd.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmkcg_la-mkcg_out_xxd.Tpo $(DEPDIR)/libmkcg_la-mkcg_out_xxd.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mkcg_out_xxd.c' object='libmkcg_la-mkcg_out_xxd.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mkcg_vid2k_CFLAGS) $(CFLAGS) -c -o mkcg_vid2k-mkcg.vid2k.o `test -f 'mkcg.vid2k.c' || echo '$(srcdir)/'`mkcg.vid2k.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmkcg_la_CFLAGS) $(CFLAGS) -c -o libmkcg_la-mkcg_out_xxd.lo `test -f 'mkcg_out_xxd.c' || echo '$(srcdir)/'`mkcg_out_xxd.c
 
-mkcg_vid2k-mkcg.vid2k.obj: mkcg.vid2k.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mkcg_vid2k_CFLAGS) $(CFLAGS) -MT mkcg_vid2k-mkcg.vid2k.obj -MD -MP -MF $(DEPDIR)/mkcg_vid2k-mkcg.vid2k.Tpo -c -o mkcg_vid2k-mkcg.vid2k.obj `if test -f 'mkcg.vid2k.c'; then $(CYGPATH_W) 'mkcg.vid2k.c'; else $(CYGPATH_W) '$(srcdir)/mkcg.vid2k.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mkcg_vid2k-mkcg.vid2k.Tpo $(DEPDIR)/mkcg_vid2k-mkcg.vid2k.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mkcg.vid2k.c' object='mkcg_vid2k-mkcg.vid2k.obj' libtool=no @AMDEPBACKSLASH@
+libmkcg_la-mkcg_out_xpm.lo: mkcg_out_xpm.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmkcg_la_CFLAGS) $(CFLAGS) -MT libmkcg_la-mkcg_out_xpm.lo -MD -MP -MF $(DEPDIR)/libmkcg_la-mkcg_out_xpm.Tpo -c -o libmkcg_la-mkcg_out_xpm.lo `test -f 'mkcg_out_xpm.c' || echo '$(srcdir)/'`mkcg_out_xpm.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmkcg_la-mkcg_out_xpm.Tpo $(DEPDIR)/libmkcg_la-mkcg_out_xpm.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mkcg_out_xpm.c' object='libmkcg_la-mkcg_out_xpm.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mkcg_vid2k_CFLAGS) $(CFLAGS) -c -o mkcg_vid2k-mkcg.vid2k.obj `if test -f 'mkcg.vid2k.c'; then $(CYGPATH_W) 'mkcg.vid2k.c'; else $(CYGPATH_W) '$(srcdir)/mkcg.vid2k.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmkcg_la_CFLAGS) $(CFLAGS) -c -o libmkcg_la-mkcg_out_xpm.lo `test -f 'mkcg_out_xpm.c' || echo '$(srcdir)/'`mkcg_out_xpm.c
+
+libmkcg_la-mkcg_cli.lo: mkcg_cli.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmkcg_la_CFLAGS) $(CFLAGS) -MT libmkcg_la-mkcg_cli.lo -MD -MP -MF $(DEPDIR)/libmkcg_la-mkcg_cli.Tpo -c -o libmkcg_la-mkcg_cli.lo `test -f 'mkcg_cli.c' || echo '$(srcdir)/'`mkcg_cli.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmkcg_la-mkcg_cli.Tpo $(DEPDIR)/libmkcg_la-mkcg_cli.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mkcg_cli.c' object='libmkcg_la-mkcg_cli.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmkcg_la_CFLAGS) $(CFLAGS) -c -o libmkcg_la-mkcg_cli.lo `test -f 'mkcg_cli.c' || echo '$(srcdir)/'`mkcg_cli.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -600,6 +628,48 @@ cscopelist-am: $(am__tagged_files)
 distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
+check-DEJAGNU: site.exp
+	srcdir='$(srcdir)'; export srcdir; \
+	EXPECT=$(EXPECT); export EXPECT; \
+	if $(SHELL) -c "$(RUNTEST) --version" > /dev/null 2>&1; then \
+	  exit_status=0; l='$(DEJATOOL)'; for tool in $$l; do \
+	    if $(RUNTEST) $(AM_RUNTESTFLAGS) $(RUNTESTDEFAULTFLAGS) $(RUNTESTFLAGS); \
+	    then :; else exit_status=1; fi; \
+	  done; \
+	else echo "WARNING: could not find '$(RUNTEST)'" 1>&2; :;\
+	fi; \
+	exit $$exit_status
+site.exp: Makefile $(EXTRA_DEJAGNU_SITE_CONFIG)
+	@echo 'Making a new site.exp file ...'
+	@echo '## these variables are automatically generated by make ##' >site.tmp
+	@echo '# Do not edit here.  If you wish to override these values' >>site.tmp
+	@echo '# edit the last section' >>site.tmp
+	@echo 'set srcdir "$(srcdir)"' >>site.tmp
+	@echo "set objdir `pwd`" >>site.tmp
+	@echo 'set build_alias "$(build_alias)"' >>site.tmp
+	@echo 'set build_triplet $(build_triplet)' >>site.tmp
+	@echo 'set host_alias "$(host_alias)"' >>site.tmp
+	@echo 'set host_triplet $(host_triplet)' >>site.tmp
+	@list='$(EXTRA_DEJAGNU_SITE_CONFIG)'; for f in $$list; do \
+	  echo "## Begin content included from file $$f.  Do not modify. ##" \
+	   && cat `test -f "$$f" || echo '$(srcdir)/'`$$f \
+	   && echo "## End content included from file $$f. ##" \
+	   || exit 1; \
+	 done >> site.tmp
+	@echo "## End of auto-generated content; you can edit from here. ##" >> site.tmp
+	@if test -f site.exp; then \
+	   sed -e '1,/^## End of auto-generated content.*##/d' site.exp >> site.tmp; \
+	 fi
+	@-rm -f site.bak
+	@test ! -f site.exp || mv site.exp site.bak
+	@mv site.tmp site.exp
+
+distclean-DEJAGNU:
+	-rm -f site.exp site.bak
+	-l='$(DEJATOOL)'; for tool in $$l; do \
+	  rm -f $$tool.sum $$tool.log; \
+	done
+
 distdir: $(DISTFILES)
 	@srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*]/\\\\&/g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's/[].[^$$\\*]/\\\\&/g'`; \
@@ -632,6 +702,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
+	$(MAKE) $(AM_MAKEFLAGS) check-DEJAGNU
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
 installdirs:
@@ -660,6 +731,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
@@ -677,8 +749,8 @@ clean-am: clean-binPROGRAMS clean-checkPROGRAMS clean-generic \
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
-distclean-am: clean-am distclean-compile distclean-generic \
-	distclean-tags
+distclean-am: clean-am distclean-DEJAGNU distclean-compile \
+	distclean-generic distclean-tags
 
 dvi: dvi-am
 
@@ -742,20 +814,21 @@ uninstall-am: uninstall-binPROGRAMS
 
 .MAKE: check-am install-am install-strip
 
-.PHONY: CTAGS GTAGS TAGS all all-am check check-am clean \
+.PHONY: CTAGS GTAGS TAGS all all-am check check-DEJAGNU check-am clean \
 	clean-binPROGRAMS clean-checkPROGRAMS clean-generic \
 	clean-libtool clean-noinstLTLIBRARIES cscopelist-am ctags \
-	ctags-am distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-binPROGRAMS \
-	install-data install-data-am install-dvi install-dvi-am \
-	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags tags-am uninstall uninstall-am uninstall-binPROGRAMS
+	ctags-am distclean distclean-DEJAGNU distclean-compile \
+	distclean-generic distclean-libtool distclean-tags distdir dvi \
+	dvi-am html html-am info info-am install install-am \
+	install-binPROGRAMS install-data install-data-am install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-info install-info-am install-man \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	pdf pdf-am ps ps-am tags tags-am uninstall uninstall-am \
+	uninstall-binPROGRAMS
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
