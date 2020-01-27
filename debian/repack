@@ -62,6 +62,8 @@ nonfree_fileglobs=(
         # Third-party compiler in non-source form, and related files.
 
         # Auto-generated files are non-source form.
+	man/mkcg.6416.1
+	man/mkcg.vid2k.1
 
         # Compiled files are non-source form.
 
