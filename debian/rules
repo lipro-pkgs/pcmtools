@@ -36,7 +36,9 @@ export https_proxy = ${http_proxy}
 
 
 %:
+	$(Q)(test -e .git && echo "use .git folder" || touch .git)
 	dh $@
+	$(Q)(test -f .git && rm .git || echo "use .git folder")
 
 
 override_dh_installchangelogs:
