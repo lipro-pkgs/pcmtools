@@ -8,6 +8,7 @@ pcmtools (1.2+dfsg.1-1) UNRELEASED; urgency=low
     bindings inside the configuration and build process that have
     to respect; without this, for example the manpage generation
     would be fail.
+  * debian/patches: Backport 1.3 changes for DejaGnu.
 
  --
 

@@ -1,0 +1,26 @@
+From 6ac7ec08abbc92a9613637b1eacd18cc6106c1ef Mon Sep 17 00:00:00 2001
+From: Stephan Linz <linz@li-pro.net>
+Date: Tue, 21 Jan 2020 19:56:02 +0100
+Subject: Disable DejaGnu XML report
+
+Signed-off-by: Stephan Linz <linz@li-pro.net>
+
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 332ec0b..bdd259a 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -35,11 +35,9 @@ EXTRA_DIST +=				\
+ 
+ DEJATOOL = mkcg
+ RUNTESTDEFAULTFLAGS =			\
+-	--tool $$tool			\
+-	--srcdir $$srcdir/smoke		\
+-	--xml --status --all
+-
+-CLEANFILES += mkcg.xml
++	--tool "$$tool"			\
++	--srcdir "$$srcdir/smoke"	\
++	--status --all --verbose
+ 
+ check_PROGRAMS =			\
+ 	mkcg.6416			\
