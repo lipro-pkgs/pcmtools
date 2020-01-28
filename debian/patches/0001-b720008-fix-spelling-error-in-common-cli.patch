@@ -1,0 +1,28 @@
+From b720008e0e391228fb99a716030c1580051f1407 Mon Sep 17 00:00:00 2001
+From: Stephan Linz <linz@li-pro.net>
+Date: Tue, 28 Jan 2020 19:08:29 +0100
+Subject: Fix spelling error in common CLI.
+
+As reportet by Debian lintian there were an typo in
+the common and shared command line interface.
+
+Information was:
+
+I: pcmtools: spelling-error-in-binary usr/bin/mkcg.6416 programm program
+I: pcmtools: spelling-error-in-binary usr/bin/mkcg.vid2k programm program
+
+Signed-off-by: Stephan Linz <linz@li-pro.net>
+
+diff --git a/src/mkcg_cli.c b/src/mkcg_cli.c
+index 96184b4..3e08f63 100644
+--- a/src/mkcg_cli.c
++++ b/src/mkcg_cli.c
+@@ -61,7 +61,7 @@ static void _mkcg_print_help(mkcg_cg *cg)
+ 	 * no-wrap */
+ 	OUT("\
+ Usage: %s [OPTION]... XPMFILE...\n",
+-		cg->progname ? cg->progname : "no programm");
++		cg->progname ? cg->progname : "no program");
+ 
+ 	/* TRANSLATORS: --help output 2 (brief description)
+ 	 * no-wrap */
