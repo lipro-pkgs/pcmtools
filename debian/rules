@@ -37,7 +37,7 @@ export https_proxy = ${http_proxy}
 
 %:
 	$(Q)(test -e .git && echo "use .git folder" || touch .git)
-	dh $@
+	dh $@ --with autoreconf
 	$(Q)(test -f .git && rm .git || echo "use .git folder")
 
 
