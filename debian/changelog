@@ -1,6 +1,5 @@
-pcmtools (1.3+dfsg.1-1) UNRELEASED; urgency=low
+pcmtools (1.3+dfsg.1-1) unstable; urgency=low
 
-  * UNRELEASED
   * New upstream version 1.3+dfsg.1
   * debian/patches: Revert backporting of 1.3 changes.
   * debian/rules: Revert presetup of package distribution version.
@@ -8,7 +7,7 @@ pcmtools (1.3+dfsg.1-1) UNRELEASED; urgency=low
   * debian/copyright: Explain excluded files on repacking.
   * debian/patches: Fix spelling arror as reportet by lintian.
 
- --
+ -- Stephan Linz <linz@li-pro.net>  Tue, 28 Jan 2020 15:20:15 +0100
 
 pcmtools (1.2+dfsg.1-1) unstable; urgency=low
 
