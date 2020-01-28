@@ -21,7 +21,10 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
 
-DISTRIBUTION_NAME = pcmtools
+# parse all Debian package informations (needs dpkg-dev >= 1.16.1.1):
+include /usr/share/dpkg/pkg-info.mk
+DISTRIBUTION_NAME = ${DEB_SOURCE}
+DISTRIBUTION_VERS = ${DEB_VERSION}
 
 package_working_root = debian
 package_install_root = debian/${DISTRIBUTION_NAME}
@@ -37,7 +40,9 @@ export https_proxy = ${http_proxy}
 
 %:
 	$(Q)(test -e .git && echo "use .git folder" || touch .git)
+	$(Q)(echo "${DISTRIBUTION_VERS}" > .dist-version)
 	dh $@ --with autoreconf
+	$(Q)(rm .dist-version)
 	$(Q)(test -f .git && rm .git || echo "use .git folder")
 
 

@@ -10,6 +10,7 @@ pcmtools (1.2+dfsg.1-1) UNRELEASED; urgency=low
     would be fail.
   * debian/patches: Backport 1.3 changes for DejaGnu.
   * debian/rules: Enable auto-reconfiguration to cache the backport.
+  * debian/rules: Preset the correct package distribution version.
 
  --
 
