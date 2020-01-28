@@ -7,6 +7,7 @@ Build-Depends: debhelper (>= 9),
  autotools-dev,
  quilt,
  dejagnu,
+ help2man,
  pkg-config (>= 0.18),
  libxpm-dev (>= 3.5)
 Standards-Version: 3.9.8

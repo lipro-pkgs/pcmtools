@@ -7,6 +7,7 @@ version=3
 
 # Current manual tar-* at GitHub
 opts=\
+dversionmangle=s/\+dfsg\.\d+$//,\
 pgpsigurlmangle=s/$/\.asc/ \
     https://github.com/lipro-cpm4l/pcmtools/releases .*/download/.*/pcmtools-(\d\S+)@ARCHIVE_EXT@ \
     debian debian/repack

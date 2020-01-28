@@ -1,3 +1,18 @@
+pcmtools (1.2+dfsg.1-1) unstable; urgency=low
+
+  * New upstream version 1.2+dfsg.1
+  * debian/repack: Cleanup auto-generated manpages from upstream.
+  * debian/watch: Respect DFSG version extension.
+  * debian/rules: Handle Git dependency on demand. There are hard
+    bindings inside the configuration and build process that have
+    to respect; without this, for example the manpage generation
+    would be fail.
+  * debian/control: Depends on help2man for auto-generated manpages.
+  * debian/pcmtools.lintian-overrides: Remove manpage related entries.
+    The package will install manpages for eac binary.
+
+ -- Stephan Linz <linz@li-pro.net>  Mon, 27 Jan 2020 13:36:08 +0100
+
 pcmtools (1.1-1) unstable; urgency=low
 
   * New upstream version 1.1
