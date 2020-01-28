@@ -15,9 +15,9 @@
 @SET_MAKE@
 
 #
-# Automake definitions for man/
+# Automake definitions for src/smoke/
 #
-# Copyright (C) 2015  Stephan Linz <linz@li-pro.net>
+# Copyright (C) 2002-2020  Stephan Linz <linz@li-pro.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -107,10 +107,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@CROSS_COMPILING_FROM_GIT_FALSE@am__append_1 = $(man_MANS)
-@BUILD_FROM_GIT_TRUE@am__append_2 = -N
-@BUILD_FROM_GIT_TRUE@am__append_3 = $(man_MANS)
-subdir = man
+subdir = src/smoke
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ac-prog-help2man.m4 \
 	$(top_srcdir)/m4/as-ac-expand.m4 \
@@ -151,38 +148,10 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
-am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
-am__vpath_adj = case $$p in \
-    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
-    *) f=$$p;; \
-  esac;
-am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
-am__install_max = 40
-am__nobase_strip_setup = \
-  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
-am__nobase_strip = \
-  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
-am__nobase_list = $(am__nobase_strip_setup); \
-  for p in $$list; do echo "$$p $$p"; done | \
-  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
-  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
-    if (++n[$$2] == $(am__install_max)) \
-      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
-    END { for (dir in files) print dir, files[dir] }'
-am__base_list = \
-  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
-  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-am__uninstall_files_from_dir = { \
-  test -z "$$files" \
-    || { test ! -d "$$dir" && test ! -f "$$dir" && test ! -r "$$dir"; } \
-    || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
-         $(am__cd) "$$dir" && rm -f $$files; }; \
-  }
-man1dir = $(mandir)/man1
-am__installdirs = "$(DESTDIR)$(man1dir)"
-NROFF = nroff
-MANS = $(man_MANS)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
+RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir $$srcdir
+EXPECT = expect
+RUNTEST = runtest
 am__DIST_COMMON = $(srcdir)/Makefile.in
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 pkgdatadir = @pkgdatadir@
@@ -222,7 +191,7 @@ HARDENING_FORTIFY_CPPFLAGS = @HARDENING_FORTIFY_CPPFLAGS@
 HARDENING_RELRO_LDFLAGS = @HARDENING_RELRO_LDFLAGS@
 HARDENING_STACK_CFLAGS = @HARDENING_STACK_CFLAGS@
 HELP2MAN = @HELP2MAN@
-HELP2MANFLAGS = @HELP2MANFLAGS@ $(am__append_2)
+HELP2MANFLAGS = @HELP2MANFLAGS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -328,10 +297,16 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-ACLOCAL_AMFLAGS = -I m4
-EXTRA_DIST = mkcg.6416.x mkcg.vid2k.x $(am__append_1)
-CLEANFILES = $(am__append_3)
-@CROSS_COMPILING_FROM_GIT_FALSE@man_MANS = mkcg.6416.1 mkcg.vid2k.1
+EXTRA_DIST = mkcg/6416.exp data/6416_30.xpm mkcg/vid2k.exp \
+	data/vid2k_30.xpm config/default.exp
+CLEANFILES = 
+AUTOMAKE_OPTIONS = dejagnu
+DEJATOOL = mkcg
+RUNTESTFLAGS = \
+	--srcdir "$(abs_srcdir)"				\
+	--objdir "$(abs_top_builddir)/src"			\
+	--status --all --verbose
+
 MAINTAINERCLEANFILES = $(srcdir)/Makefile.in
 all: all-am
 
@@ -345,9 +320,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu man/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/smoke/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu man/Makefile
+	  $(AUTOMAKE) --gnu src/smoke/Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
@@ -371,55 +346,54 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
-install-man1: $(man_MANS)
-	@$(NORMAL_INSTALL)
-	@list1=''; \
-	list2='$(man_MANS)'; \
-	test -n "$(man1dir)" \
-	  && test -n "`echo $$list1$$list2`" \
-	  || exit 0; \
-	echo " $(MKDIR_P) '$(DESTDIR)$(man1dir)'"; \
-	$(MKDIR_P) "$(DESTDIR)$(man1dir)" || exit 1; \
-	{ for i in $$list1; do echo "$$i"; done;  \
-	if test -n "$$list2"; then \
-	  for i in $$list2; do echo "$$i"; done \
-	    | sed -n '/\.1[a-z]*$$/p'; \
-	fi; \
-	} | while read p; do \
-	  if test -f $$p; then d=; else d="$(srcdir)/"; fi; \
-	  echo "$$d$$p"; echo "$$p"; \
-	done | \
-	sed -e 'n;s,.*/,,;p;h;s,.*\.,,;s,^[^1][0-9a-z]*$$,1,;x' \
-	      -e 's,\.[0-9a-z]*$$,,;$(transform);G;s,\n,.,' | \
-	sed 'N;N;s,\n, ,g' | { \
-	list=; while read file base inst; do \
-	  if test "$$base" = "$$inst"; then list="$$list $$file"; else \
-	    echo " $(INSTALL_DATA) '$$file' '$(DESTDIR)$(man1dir)/$$inst'"; \
-	    $(INSTALL_DATA) "$$file" "$(DESTDIR)$(man1dir)/$$inst" || exit $$?; \
-	  fi; \
-	done; \
-	for i in $$list; do echo "$$i"; done | $(am__base_list) | \
-	while read files; do \
-	  test -z "$$files" || { \
-	    echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(man1dir)'"; \
-	    $(INSTALL_DATA) $$files "$(DESTDIR)$(man1dir)" || exit $$?; }; \
-	done; }
-
-uninstall-man1:
-	@$(NORMAL_UNINSTALL)
-	@list=''; test -n "$(man1dir)" || exit 0; \
-	files=`{ for i in $$list; do echo "$$i"; done; \
-	l2='$(man_MANS)'; for i in $$l2; do echo "$$i"; done | \
-	  sed -n '/\.1[a-z]*$$/p'; \
-	} | sed -e 's,.*/,,;h;s,.*\.,,;s,^[^1][0-9a-z]*$$,1,;x' \
-	      -e 's,\.[0-9a-z]*$$,,;$(transform);G;s,\n,.,'`; \
-	dir='$(DESTDIR)$(man1dir)'; $(am__uninstall_files_from_dir)
 tags TAGS:
 
 ctags CTAGS:
 
 cscope cscopelist:
 
+
+check-DEJAGNU: site.exp
+	srcdir='$(srcdir)'; export srcdir; \
+	EXPECT=$(EXPECT); export EXPECT; \
+	if $(SHELL) -c "$(RUNTEST) --version" > /dev/null 2>&1; then \
+	  exit_status=0; l='$(DEJATOOL)'; for tool in $$l; do \
+	    if $(RUNTEST) $(AM_RUNTESTFLAGS) $(RUNTESTDEFAULTFLAGS) $(RUNTESTFLAGS); \
+	    then :; else exit_status=1; fi; \
+	  done; \
+	else echo "WARNING: could not find '$(RUNTEST)'" 1>&2; :;\
+	fi; \
+	exit $$exit_status
+site.exp: Makefile $(EXTRA_DEJAGNU_SITE_CONFIG)
+	@echo 'Making a new site.exp file ...'
+	@echo '## these variables are automatically generated by make ##' >site.tmp
+	@echo '# Do not edit here.  If you wish to override these values' >>site.tmp
+	@echo '# edit the last section' >>site.tmp
+	@echo 'set srcdir "$(srcdir)"' >>site.tmp
+	@echo "set objdir `pwd`" >>site.tmp
+	@echo 'set build_alias "$(build_alias)"' >>site.tmp
+	@echo 'set build_triplet $(build_triplet)' >>site.tmp
+	@echo 'set host_alias "$(host_alias)"' >>site.tmp
+	@echo 'set host_triplet $(host_triplet)' >>site.tmp
+	@list='$(EXTRA_DEJAGNU_SITE_CONFIG)'; for f in $$list; do \
+	  echo "## Begin content included from file $$f.  Do not modify. ##" \
+	   && cat `test -f "$$f" || echo '$(srcdir)/'`$$f \
+	   && echo "## End content included from file $$f. ##" \
+	   || exit 1; \
+	 done >> site.tmp
+	@echo "## End of auto-generated content; you can edit from here. ##" >> site.tmp
+	@if test -f site.exp; then \
+	   sed -e '1,/^## End of auto-generated content.*##/d' site.exp >> site.tmp; \
+	 fi
+	@-rm -f site.bak
+	@test ! -f site.exp || mv site.exp site.bak
+	@mv site.tmp site.exp
+
+distclean-DEJAGNU:
+	-rm -f site.exp site.bak
+	-l='$(DEJATOOL)'; for tool in $$l; do \
+	  rm -f $$tool.sum $$tool.log; \
+	done
 
 distdir: $(DISTFILES)
 	@srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*]/\\\\&/g'`; \
@@ -452,12 +426,10 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) check-DEJAGNU
 check: check-am
-all-am: Makefile $(MANS)
+all-am: Makefile
 installdirs:
-	for dir in "$(DESTDIR)$(man1dir)"; do \
-	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
-	done
 install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
@@ -496,7 +468,7 @@ clean-am: clean-generic clean-libtool mostlyclean-am
 
 distclean: distclean-am
 	-rm -f Makefile
-distclean-am: clean-am distclean-generic
+distclean-am: clean-am distclean-DEJAGNU distclean-generic
 
 dvi: dvi-am
 
@@ -510,7 +482,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-man
+install-data-am:
 
 install-dvi: install-dvi-am
 
@@ -526,7 +498,7 @@ install-info: install-info-am
 
 install-info-am:
 
-install-man: install-man1
+install-man:
 
 install-pdf: install-pdf-am
 
@@ -554,37 +526,25 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-man
+uninstall-am:
 
-uninstall-man: uninstall-man1
+.MAKE: check-am install-am install-strip
 
-.MAKE: install-am install-strip
-
-.PHONY: all all-am check check-am clean clean-generic clean-libtool \
-	cscopelist-am ctags-am distclean distclean-generic \
-	distclean-libtool distdir dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am install-man \
-	install-man1 install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
-	ps ps-am tags-am uninstall uninstall-am uninstall-man \
-	uninstall-man1
+.PHONY: all all-am check check-DEJAGNU check-am clean clean-generic \
+	clean-libtool cscopelist-am ctags-am distclean \
+	distclean-DEJAGNU distclean-generic distclean-libtool distdir \
+	dvi dvi-am html html-am info info-am install install-am \
+	install-data install-data-am install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-man install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags-am uninstall \
+	uninstall-am
 
 .PRECIOUS: Makefile
 
-
-@BUILD_FROM_GIT_TRUE@$(top_builddir)/src/mkcg.%$(EXEEXT): 	$(top_srcdir)/src/mkcg_cmd_%.c \
-@BUILD_FROM_GIT_TRUE@					$(top_srcdir)/src/mkcg_cli.c \
-@BUILD_FROM_GIT_TRUE@					$(top_srcdir)/configure.ac
-@BUILD_FROM_GIT_TRUE@	$(AM_V_GEN)$(MAKE) $(AM_MAKEFLAGS) -C $(@D) $(@F)
-
-@BUILD_FROM_GIT_TRUE@mkcg.%.1: $(top_builddir)/src/mkcg.%$(EXEEXT) mkcg.%.x
-@BUILD_FROM_GIT_TRUE@	$(AM_V_GEN)$(HELP2MAN) $(HELP2MANFLAGS) \
-@BUILD_FROM_GIT_TRUE@	  -i $(srcdir)/$(patsubst %$(EXEEXT),%,$(<F)).x \
-@BUILD_FROM_GIT_TRUE@	  $(top_builddir)/src/$(<F) -o $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
