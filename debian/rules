@@ -40,9 +40,7 @@ export https_proxy = ${http_proxy}
 
 %:
 	$(Q)(test -e .git && echo "use .git folder" || touch .git)
-	$(Q)(echo "${DISTRIBUTION_VERS}" > .dist-version)
 	dh $@ --with autoreconf
-	$(Q)(rm .dist-version)
 	$(Q)(test -f .git && rm .git || echo "use .git folder")
 
 
