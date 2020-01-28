@@ -1,6 +1,7 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Debianized-By: Stephan Linz <linz@li-pro.net>
 Debianized-Date: Sat, 25 Jan 2020 15:07:19 +0100
+Files-Excluded: man/mkcg.6416.1 man/mkcg.vid2k.1
 Upstream-Name: pcmtools - PC/M tool chain
 Upstream-contact: Stephan Linz <linz@li-pro.net>
 Source: https://github.com/lipro-cpm4l/pcmtools
