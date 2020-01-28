@@ -1,3 +1,45 @@
+1.2-10-g679950c [2020-01-24 23:35:47 +0100]:
+
+2020-01-24  Stephan Linz <linz@li-pro.net>
+
+        * Prepare release 1.3 [679950c]
+
+2020-01-22  Stephan Linz <linz@li-pro.net>
+
+        * Merge pull request #6 from rexut/master [965d3d1]
+
+2020-01-21  Stephan Linz <linz@li-pro.net>
+
+        * Copyright year 2020 [85a92ac]
+
+2020-01-21  Stephan Linz <linz@li-pro.net>
+
+        * Add Appveyor CI [3ed4bad]
+
+2020-01-21  Stephan Linz <linz@li-pro.net>
+
+        * Bump to Autoconf 2.69 with fixed URI [1f76f02]
+
+2020-01-21  Stephan Linz <linz@li-pro.net>
+
+        * Bump to Automake 1.14 with dist-xz enabled [4f13eba]
+
+2020-01-21  Stephan Linz <linz@li-pro.net>
+
+        * Split Automake for DejaGnu smoke config [f6d3a23]
+
+2020-01-21  Stephan Linz <linz@li-pro.net>
+
+        * Disable DejaGnu XML report [6ac7ec0]
+
+2020-01-21  Stephan Linz <linz@li-pro.net>
+
+        * Adjust the new upstream project URI [587cd6f]
+
+2015-12-14  Stephan Linz <linz@li-pro.net>
+
+        * Use new CLI syntax in data [f64a8c6]
+
 1.2 [2015-12-05 11:09:30 +0100]:
 
 2015-12-05  Stephan Linz <linz@li-pro.net>
